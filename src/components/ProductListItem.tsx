@@ -4,7 +4,7 @@ import { Product } from "../../assets/types/product";
 
 export const ProductListItem = ({ product }: { product: Product }) => {
   return (
-    <View>
+    <View style={styles.item}>
       <View style={styles.itemImageContainer}>
         <Image source={product.heroImage} style={styles.itemImage} />
       </View>
