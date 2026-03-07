@@ -1,14 +1,14 @@
 import React from "react";
 import { StyleSheet, Text, View } from "react-native";
 
-const auth = () => {
+const Auth = () => {
   return (
     <View>
-      <Text>auth</Text>
+      <Text>Auth</Text>
     </View>
   );
 };
 
-export default auth;
+export default Auth;
 
 const styles = StyleSheet.create({});
