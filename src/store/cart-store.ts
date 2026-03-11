@@ -26,20 +26,22 @@ const initialCartItems: CartItemType[] = [];
 export const useCartStore = create<CartState>((set, get) => ({
   items: initialCartItems,
   addItem: (item: CartItemType) => {
-    const existingItem = get().items.find((item) => item.id === item.id);
+    const existingItem = get().items.find(
+      (cartItem) => cartItem.id === item.id,
+    );
     if (existingItem) {
       set((state) => ({
-        items: state.items.map((itemExist) =>
-          itemExist.id === item.id
+        items: state.items.map((cartItem) =>
+          cartItem.id === item.id
             ? {
-                ...itemExist,
+                ...cartItem,
                 quantity: Math.min(
-                  itemExist.quantity + item.quantity,
+                  cartItem.quantity + item.quantity,
                   PRODUCTS.find((product) => product.id === item.id)
                     ?.maxQuantity || 0,
                 ),
               }
-            : itemExist,
+            : cartItem,
         ),
       }));
     } else {
