@@ -4,9 +4,8 @@ import * as SecureStore from "expo-secure-store";
 import * as aesjs from "aes-js";
 import "react-native-get-random-values";
 
-const supabaseUrl = process.env.EXPO_PUBLIC_SUPABASE_URL!;
-const supabasePublishableKey =
-  process.env.EXPO_PUBLIC_SUPABASE_PUBLISHABLE_KEY!;
+const supabaseUrl = "https://dhshshrfayvmncnkwauk.supabase.co";
+const supabasePublishableKey = "sb_publishable_bnaeAockDB8P6QwIxcLPOQ_-9CJCfwL";
 
 class LargeSecureStore {
   private async _encrypt(key: string, value: string) {
@@ -62,7 +61,7 @@ class LargeSecureStore {
   }
 }
 
-const supabase = createClient(supabaseUrl, supabasePublishableKey, {
+export const supabase = createClient(supabaseUrl, supabasePublishableKey, {
   auth: {
     storage: new LargeSecureStore(),
     autoRefreshToken: true,
