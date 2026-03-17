@@ -1,6 +1,8 @@
 import { supabase } from "@/lib/supabase";
 import { authSchema, AuthValidation } from "@/lib/validators";
+import { useAuth } from "@/providers/auth-provider";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { Redirect } from "expo-router";
 import React from "react";
 import { Controller, useForm } from "react-hook-form";
 import {
@@ -14,6 +16,7 @@ import {
 import { Toast } from "react-native-toast-notifications";
 
 const Auth = () => {
+  const { session } = useAuth();
   const { control, handleSubmit, formState } = useForm({
     resolver: zodResolver(authSchema),
     defaultValues: {
@@ -21,6 +24,8 @@ const Auth = () => {
       password: "",
     },
   });
+
+  if (session) return <Redirect href="/" />;
 
   const signIn = async (data: AuthValidation) => {
     const { error } = await supabase.auth.signInWithPassword(data);
@@ -113,6 +118,7 @@ const Auth = () => {
         <TouchableOpacity
           style={styles.button}
           disabled={formState.isSubmitting}
+          onPress={handleSubmit(signIn)}
         >
           <Text style={styles.buttonText}>Sign In</Text>
         </TouchableOpacity>
@@ -120,7 +126,7 @@ const Auth = () => {
         <TouchableOpacity
           style={[styles.button, styles.signUpButton]}
           disabled={formState.isSubmitting}
-          onPress={handleSubmit(signIn)}
+          onPress={handleSubmit(signUp)}
         >
           <Text style={styles.buttonText}>Sign Up</Text>
         </TouchableOpacity>
