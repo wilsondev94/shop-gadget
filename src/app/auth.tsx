@@ -1,4 +1,5 @@
-import { authSchema } from "@/lib/validators";
+import { supabase } from "@/lib/supabase";
+import { authSchema, AuthValidation } from "@/lib/validators";
 import { zodResolver } from "@hookform/resolvers/zod";
 import React from "react";
 import { Controller, useForm } from "react-hook-form";
@@ -10,6 +11,7 @@ import {
   TouchableOpacity,
   View,
 } from "react-native";
+import { Toast } from "react-native-toast-notifications";
 
 const Auth = () => {
   const { control, handleSubmit, formState } = useForm({
@@ -19,6 +21,20 @@ const Auth = () => {
       password: "",
     },
   });
+
+  const signUp = async (data: AuthValidation) => {
+    const { error } = await supabase.auth.signUp(data);
+
+    if (error) {
+      alert(error.message);
+    } else {
+      Toast.show("Signed up successfully", {
+        type: "success",
+        placement: "top",
+        duration: 1500,
+      });
+    }
+  };
 
   return (
     <ImageBackground
@@ -90,6 +106,7 @@ const Auth = () => {
         <TouchableOpacity
           style={[styles.button, styles.signUpButton]}
           disabled={formState.isSubmitting}
+          onPress={handleSubmit(signUp)}
         >
           <Text style={styles.buttonText}>Sign Up</Text>
         </TouchableOpacity>
