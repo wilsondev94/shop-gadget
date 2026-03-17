@@ -22,6 +22,20 @@ const Auth = () => {
     },
   });
 
+  const signIn = async (data: AuthValidation) => {
+    const { error } = await supabase.auth.signInWithPassword(data);
+
+    if (error) {
+      alert(error.message);
+    } else {
+      Toast.show("Signed in successfully", {
+        type: "success",
+        placement: "top",
+        duration: 1500,
+      });
+    }
+  };
+
   const signUp = async (data: AuthValidation) => {
     const { error } = await supabase.auth.signUp(data);
 
@@ -106,7 +120,7 @@ const Auth = () => {
         <TouchableOpacity
           style={[styles.button, styles.signUpButton]}
           disabled={formState.isSubmitting}
-          onPress={handleSubmit(signUp)}
+          onPress={handleSubmit(signIn)}
         >
           <Text style={styles.buttonText}>Sign Up</Text>
         </TouchableOpacity>
