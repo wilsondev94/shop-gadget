@@ -1,6 +1,7 @@
 import { Redirect, Stack, useLocalSearchParams } from "expo-router";
 import { useState } from "react";
 import {
+  ActivityIndicator,
   FlatList,
   Image,
   StyleSheet,
@@ -10,24 +11,26 @@ import {
 } from "react-native";
 import { useToast } from "react-native-toast-notifications";
 
-import { PRODUCTS } from "../../../assets/products";
 import { useCartStore } from "../../store/cart-store";
+import { useGetProduct } from "@/services/queries";
 
 const ProductDetails = () => {
   const { slug } = useLocalSearchParams<{ slug: string }>();
   const toast = useToast();
 
+  const { data: product, isLoading, error } = useGetProduct(slug);
+
   const { items, addItem, incrementItem, decrementItem } = useCartStore();
 
-  const product = PRODUCTS.find((product) => product.slug == slug);
-
-  if (!product) return <Redirect href="/404" />;
-
-  const cartItem = items.find((item) => item.id == product.id);
+  const cartItem = items.find((item) => item.id == product?.id);
 
   const initialQty = cartItem ? cartItem.quantity : 1;
 
   const [quantity, setQuantity] = useState(initialQty);
+
+  if (isLoading) return <ActivityIndicator />;
+  if (error) return <Text>Error: {error.message}</Text>;
+  if (!product) return <Redirect href="/404" />;
 
   const increaseQuantity = () => {
     if (quantity < product.maxQuantity) {
@@ -71,7 +74,7 @@ const ProductDetails = () => {
     <View style={styles.container}>
       <Stack.Screen options={{ title: product.title }} />
 
-      <Image source={product.heroImage} style={styles.heroImage} />
+      <Image source={{ uri: product.heroImage }} style={styles.heroImage} />
 
       <View style={{ padding: 16, flex: 1 }}>
         <Text style={styles.title}>Title: {product.title}</Text>
@@ -87,7 +90,7 @@ const ProductDetails = () => {
           data={product.imagesUrl}
           keyExtractor={(item, index) => index.toString()}
           renderItem={({ item }) => (
-            <Image source={item} style={styles.image} />
+            <Image source={{ uri: item }} style={styles.image} />
           )}
           horizontal
           showsHorizontalScrollIndicator={false}

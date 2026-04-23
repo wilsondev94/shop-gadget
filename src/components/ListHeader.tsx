@@ -26,8 +26,6 @@ export const ListHeader = ({
     await supabase.auth.signOut();
   };
 
-  console.log("CATEGORIES", categories);
-
   return (
     <View style={[styles.headerContainer]}>
       <View style={styles.headerTop}>
