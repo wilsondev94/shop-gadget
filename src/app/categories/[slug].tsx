@@ -1,25 +1,36 @@
+import { ProductListItem } from "@/components/ProductListItem";
+import { useGetCategoryAndProducts } from "@/services/queries";
 import { Redirect, Stack, useLocalSearchParams } from "expo-router";
 import React from "react";
-import { FlatList, Image, StyleSheet, Text, View } from "react-native";
-import { CATEGORIES } from "../../../assets/categories";
-import { PRODUCTS } from "../../../assets/products";
-import { ProductListItem } from "@/components/ProductListItem";
+import {
+  ActivityIndicator,
+  FlatList,
+  Image,
+  StyleSheet,
+  Text,
+  View,
+} from "react-native";
 
 const Category = () => {
   const { slug } = useLocalSearchParams<{ slug: string }>();
-  const category = CATEGORIES.find((category) => category.slug === slug);
 
-  if (!category) return <Redirect href="/404" />;
+  const { data, isLoading, error } = useGetCategoryAndProducts(slug);
 
-  const products = PRODUCTS.filter((product) => product.category.slug === slug);
+  if (isLoading) return <ActivityIndicator />;
+  if (error || !data) return <Text>Error: {error?.message}</Text>;
+  if (!data?.category) return <Redirect href="/404" />;
+
   return (
     <View style={styles.container}>
-      <Stack.Screen options={{ title: category.name }} />
-      <Image source={{ uri: category.imageUrl }} style={styles.heroImage} />
-      <Text style={styles.title}>{category.name}</Text>
+      <Stack.Screen options={{ title: data.category.name }} />
+      <Image
+        source={{ uri: data.category.imageUrl }}
+        style={styles.heroImage}
+      />
+      <Text style={styles.title}>{data.category.name}</Text>
 
       <FlatList
-        data={products}
+        data={data.products}
         renderItem={({ item }) => <ProductListItem product={item} />}
         keyExtractor={(item) => item.id.toString()}
         numColumns={2}
