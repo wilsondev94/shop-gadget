@@ -9,18 +9,24 @@ import {
   TouchableOpacity,
   View,
 } from "react-native";
-import { CATEGORIES } from "../../assets/categories";
 import { useCartStore } from "@/store/cart-store";
 import { supabase } from "@/lib/supabase";
 import { useAuth } from "@/providers/auth-provider";
+import { Tables } from "@/supabase/types";
 
-export const ListHeader = () => {
+export const ListHeader = ({
+  categories,
+}: {
+  categories: Tables<"category">[];
+}) => {
   const { user } = useAuth();
   const { getItemCount } = useCartStore();
 
   const handleSignOut = async () => {
     await supabase.auth.signOut();
   };
+
+  console.log("CATEGORIES", categories);
 
   return (
     <View style={[styles.headerContainer]}>
@@ -70,7 +76,7 @@ export const ListHeader = () => {
       <View style={styles.categoriesContainer}>
         <Text style={styles.sectionTitle}>Categories</Text>
         <FlatList
-          data={CATEGORIES}
+          data={categories}
           renderItem={({ item }) => (
             <Link asChild href={`/categories/${item.slug}`}>
               <Pressable style={styles.category}>
