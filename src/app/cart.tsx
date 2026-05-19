@@ -12,6 +12,7 @@ import {
 import { useCartStore } from "../store/cart-store";
 import { StatusBar } from "expo-status-bar";
 import { useToast } from "react-native-toast-notifications";
+import { createOrder, createOrderItem } from "@/services/queries";
 
 type CartItemType = {
   id: number;
@@ -70,15 +71,46 @@ const CartItem = ({
 
 export default function Cart() {
   const toast = useToast();
-  const { items, removeItem, incrementItem, decrementItem, getTotalPrice } =
-    useCartStore();
+  const {
+    items,
+    removeItem,
+    incrementItem,
+    decrementItem,
+    resetCart,
+    getTotalPrice,
+  } = useCartStore();
 
-  const handleCheckout = () => {
-    toast.show("CHECKED OUT", {
-      type: "success",
-      placement: "top",
-      duration: 1500,
-    });
+  const { mutateAsync: createSupabaseOrder } = createOrder();
+  const { mutateAsync: createSupabaseOrderItem } = createOrderItem();
+
+  const handleCheckout = async () => {
+    const totalPrice = parseFloat(getTotalPrice());
+
+    try {
+      await createSupabaseOrder(
+        { totalPrice },
+        {
+          onSuccess: (data) => {
+            createSupabaseOrderItem(
+              items.map((item) => ({
+                orderId: data.id,
+                productId: item.id,
+                quantity: item.quantity,
+              })),
+              {
+                onSuccess: () => {
+                  alert("Order created successfully");
+                  resetCart();
+                },
+              },
+            );
+          },
+        },
+      );
+    } catch (error) {
+      console.error(error);
+      alert("An error occurred while creating the order");
+    }
   };
 
   return (
