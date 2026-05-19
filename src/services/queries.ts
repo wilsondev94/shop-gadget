@@ -1,4 +1,5 @@
 import { supabase } from "@/lib/supabase";
+import { useAuth } from "@/providers/auth-provider";
 import { useQuery } from "@tanstack/react-query";
 
 export const useGetProductsAndCategories = () => {
