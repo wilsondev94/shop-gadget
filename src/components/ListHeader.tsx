@@ -158,6 +158,7 @@ const styles = StyleSheet.create({
     height: 60,
     borderRadius: 30,
     marginBottom: 8,
+    backgroundColor: "#d4d4d4",
   },
   categoryText: {},
   badgeContainer: {
