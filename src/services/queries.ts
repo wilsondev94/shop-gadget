@@ -70,7 +70,7 @@ export const useGetCategoryAndProducts = (categorySlug: string) => {
   });
 };
 
-export const useGetMyOrders = () => {
+export const useGetOrders = () => {
   const { user } = useAuth();
 
   return useQuery({
@@ -85,6 +85,29 @@ export const useGetMyOrders = () => {
       if (error)
         throw new Error(
           `An error occurred while fetching orders: ${error.message}`,
+        );
+
+      return data;
+    },
+  });
+};
+
+export const useGetOrder = (slug: string) => {
+  const { user } = useAuth();
+
+  return useQuery({
+    queryKey: ["orders", slug],
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from("order")
+        .select("*, order_items:order_item(*, products:product(*))")
+        .eq("slug", slug)
+        .eq("user", user?.id!)
+        .single();
+
+      if (error || !data)
+        throw new Error(
+          "An error occurred while fetching data: " + error.message,
         );
 
       return data;
@@ -144,8 +167,7 @@ export const createOrderItem = () => {
             quantity,
           })),
         )
-        .select("*")
-        .single();
+        .select("*");
 
       const productQuantities = insertData.reduce(
         (acc, { productId, quantity }) => {

@@ -10,7 +10,7 @@ import {
 import React from "react";
 import { Link, Stack } from "expo-router";
 import { Tables } from "@/supabase/types";
-import { useGetMyOrders } from "@/services/queries";
+import { useGetOrders } from "@/services/queries";
 import { format } from "date-fns";
 
 const renderItem: ListRenderItem<Tables<"order">> = ({ item }) => (
@@ -35,7 +35,7 @@ const renderItem: ListRenderItem<Tables<"order">> = ({ item }) => (
 );
 
 const Orders = () => {
-  const { data: orders, error, isLoading } = useGetMyOrders();
+  const { data: orders, error, isLoading } = useGetOrders();
 
   if (isLoading) return <ActivityIndicator />;
 

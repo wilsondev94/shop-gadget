@@ -1,18 +1,16 @@
+import { createOrder, createOrderItem } from "@/services/queries";
+import { StatusBar } from "expo-status-bar";
 import {
-  View,
-  Text,
-  StyleSheet,
-  Alert,
-  Platform,
-  TouchableOpacity,
   FlatList,
   Image,
-  type ImageSourcePropType,
+  Platform,
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  View,
 } from "react-native";
-import { useCartStore } from "../store/cart-store";
-import { StatusBar } from "expo-status-bar";
 import { useToast } from "react-native-toast-notifications";
-import { createOrder, createOrderItem } from "@/services/queries";
+import { useCartStore } from "../store/cart-store";
 
 type CartItemType = {
   id: number;
@@ -84,6 +82,7 @@ export default function Cart() {
   const { mutateAsync: createSupabaseOrderItem } = createOrderItem();
 
   const handleCheckout = async () => {
+    if (items.length === 0) return;
     const totalPrice = parseFloat(getTotalPrice());
 
     try {
@@ -135,7 +134,11 @@ export default function Cart() {
         <Text style={styles.totalText}>Total: ${getTotalPrice()}</Text>
         <TouchableOpacity
           onPress={handleCheckout}
-          style={styles.checkoutButton}
+          style={[
+            styles.checkoutButton,
+            { opacity: items.length === 0 ? 0.5 : 1 },
+          ]}
+          disabled={items.length === 0}
         >
           <Text style={styles.checkoutButtonText}>Checkout</Text>
         </TouchableOpacity>
