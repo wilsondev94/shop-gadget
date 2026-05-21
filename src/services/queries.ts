@@ -170,7 +170,7 @@ export const createOrderItem = () => {
 
       if (error)
         throw new Error(
-          "An error occurred while creating order item: " + error.message,
+          `An error occurred while creating order item: ${error.message}`,
         );
 
       return data;
