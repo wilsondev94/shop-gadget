@@ -17,6 +17,7 @@ interface OrderItem {
   products: {
     title: string;
     heroImage: string;
+    imagesUrl: string[];
     price: number;
   };
 }
@@ -35,6 +36,7 @@ const OrderDetails = () => {
       id: orderItem.id,
       title: orderItem.products.title,
       heroImage: orderItem.products.heroImage,
+      productImage: orderItem.products.imagesUrl,
       price: orderItem.products.price,
       quantity: orderItem.quantity,
     };
@@ -58,7 +60,10 @@ const OrderDetails = () => {
         keyExtractor={(item) => item.id.toString()}
         renderItem={({ item }) => (
           <View style={styles.orderItem}>
-            <Image source={{ uri: item.heroImage }} style={styles.heroImage} />
+            <Image
+              source={{ uri: item.productImage[0] }}
+              style={styles.heroImage}
+            />
             <View style={styles.itemInfo}>
               <Text style={styles.itemName}>{item.title}</Text>
               <Text style={styles.itemPrice}>Price: ${item.price}</Text>
