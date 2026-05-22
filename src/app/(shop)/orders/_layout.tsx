@@ -1,8 +1,10 @@
+import { useOrderUpdateSubscription } from "@/services/subscriptions";
 import { Stack } from "expo-router";
 import React from "react";
-import { StyleSheet } from "react-native";
 
 const OrdersLayout = () => {
+  useOrderUpdateSubscription();
+
   return (
     <Stack>
       <Stack.Screen name="index" options={{ headerShown: false }} />
@@ -11,5 +13,3 @@ const OrdersLayout = () => {
 };
 
 export default OrdersLayout;
-
-const styles = StyleSheet.create({});
