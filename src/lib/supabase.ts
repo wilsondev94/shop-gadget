@@ -5,8 +5,9 @@ import * as aesjs from "aes-js";
 import "react-native-get-random-values";
 import { Database } from "@/supabase/types";
 
-const supabaseUrl = "https://dhshshrfayvmncnkwauk.supabase.co";
-const supabasePublishableKey = "sb_publishable_bnaeAockDB8P6QwIxcLPOQ_-9CJCfwL";
+const supabaseUrl = process.env.EXPO_PUBLIC_SUPABASE_URL!;
+const supabasePublishableKey =
+  process.env.EXPO_PUBLIC_SUPABASE_PUBLISHABLE_KEY!;
 
 class LargeSecureStore {
   private async _encrypt(key: string, value: string) {
